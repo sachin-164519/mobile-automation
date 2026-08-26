@@ -1,0 +1,26 @@
+# Maven
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env / secrets
+.env
+*.local
+
+# Appium / emulator artifacts
+*.apk
+apps/
+
+# Logs
+*.log

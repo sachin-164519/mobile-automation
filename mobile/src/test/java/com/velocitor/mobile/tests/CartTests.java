@@ -4,26 +4,22 @@ import com.velocitor.mobile.base.BaseMobileTest;
 import com.velocitor.mobile.pages.CartPage;
 import com.velocitor.mobile.pages.LoginPage;
 import com.velocitor.mobile.pages.ProductCatalogPage;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("Cart")
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 class CartTests extends BaseMobileTest {
 
     private ProductCatalogPage catalogPage;
 
-    @BeforeEach
+    @BeforeTest
     void logIn() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");
         catalogPage = new ProductCatalogPage(driver);
     }
 
-    @Test
-    @DisplayName("adding a product updates the cart badge count")
+    @Test(description = "adding a product updates the cart badge count")
     void addingItemToCartUpdatesCartBadge() {
         catalogPage.addFirstProductToCart();
 
@@ -32,8 +28,7 @@ class CartTests extends BaseMobileTest {
                 .isEqualTo("1");
     }
 
-    @Test
-    @DisplayName("an added product appears in the cart")
+    @Test(description = "an added product appears in the cart")
     void cartScreenListsAddedItem() {
         catalogPage.addFirstProductToCart();
         catalogPage.openCart();

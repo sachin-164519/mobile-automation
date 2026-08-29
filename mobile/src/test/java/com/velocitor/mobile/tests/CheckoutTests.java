@@ -5,16 +5,11 @@ import com.velocitor.mobile.pages.CartPage;
 import com.velocitor.mobile.pages.CheckoutPage;
 import com.velocitor.mobile.pages.LoginPage;
 import com.velocitor.mobile.pages.ProductCatalogPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-
-@DisplayName("Checkout")
 class CheckoutTests extends BaseMobileTest {
 
-    @Test
-    @DisplayName("completing checkout with valid info shows an order confirmation")
+    @Test(description = "completing checkout with valid info shows an order confirmation")
     void completingCheckoutShowsConfirmation() {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.login("standard_user", "secret_sauce");

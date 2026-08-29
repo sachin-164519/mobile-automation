@@ -25,10 +25,6 @@ jobs:
           java-version: '17'
           cache: maven
 
-      # The target API resets every ~10 minutes and can be slow on a cold
-      # first request - a short retry-able warm-up call avoids the very
-      # first real test in the run eating that cold-start latency as a
-      # false-looking slow test / timeout.
       - name: Warm up target API
         run: curl -sS --retry 3 --retry-delay 5 https://restful-booker.herokuapp.com/ping || true
 
@@ -37,8 +33,6 @@ jobs:
         env:
           BASE_URI: https://restful-booker.herokuapp.com
 
-      # Always publish results, including on failure, so a red build still
-      # comes with a report explaining *why*.
       - name: Publish Surefire test report
         uses: dorny/test-reporter@v1
         if: always()
@@ -58,13 +52,6 @@ jobs:
   mobile-tests:
     name: Mobile test suite (Appium)
     runs-on: ubuntu-latest
-    # Intentionally not wired to actually execute Appium tests on the runner.
-    # See mobile/DESIGN.md and the root README for why: a hosted Android
-    # emulator on a GitHub runner is slow to boot and only covers one
-    # device/OS combination. The real version of this job would swap in a
-    # device-cloud provider (Sauce Labs / BrowserStack App Automate) and run
-    # the exact same test code against remote capabilities instead of a
-    # local emulator - no test code changes, only DriverFactory's config.
     steps:
       - name: Check out repository
         uses: actions/checkout@v4

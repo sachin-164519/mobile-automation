@@ -10,22 +10,14 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Velocitor SDET Assignment - Mobile Suite (design + samples)</name>
-    <description>
-        Appium + JUnit 5 sample tests against Sauce Labs "My Demo App" (Android).
-        Graded as design + representative sample per the assignment - see DESIGN.md.
-        Requires a running Appium server + emulator/device to actually execute;
-        see README for how to run against a local emulator if you have one set up.
-    </description>
-
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <appium-java-client.version>9.2.2</appium-java-client.version>
-        <junit.version>5.10.2</junit.version>
-        <assertj.version>3.25.3</assertj.version>
+        <testng.version>7.10.2</testng.version>
+   <assertj.version>3.25.3</assertj.version>
     </properties>
 
     <dependencies>
@@ -36,11 +28,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+   </dependency>
 
         <dependency>
             <groupId>org.assertj</groupId>

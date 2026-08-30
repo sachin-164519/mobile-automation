@@ -4,7 +4,7 @@ This project contains the Android mobile automation suite for the Sauce Labs My 
 
 ## Overview
 
-The purpose of this project is to automate end-to-end user flows for the My Demo App using Appium and the Page Object Model (POM) design pattern. The suite currently covers the main checkout journey, including login, product selection, cart, checkout, payment, review, and order completion.
+The purpose of this project is to automate end-to-end user flows for the My Demo App using Appium and the Page Object Model (POM) design pattern. The suite currently covers the main checkout journey and additional negative scenarios for login, catalog, product detail, and cart behavior.
 
 ## Target Application
 
@@ -60,7 +60,9 @@ mobile/
 │   │   │               │   ├── ProductDetailsPage.java
 │   │   │               │   └── ReviewOrderPage.java
 │   │   │               └── tests/
-│   │   │                   └── CheckoutJourneyTest.java
+│   │   │                   ├── CartAndProductDetailNegativeTests.java
+│   │   │                   ├── CheckoutJourneyTest.java
+│   │   │                   └── LoginNegativeTests.java
 │   │   └── resources/
 │   │       └── apps/
 │   │           └── MyDemoApp.apk

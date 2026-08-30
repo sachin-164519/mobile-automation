@@ -8,21 +8,13 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-/**
- * Shared plumbing for page objects: an explicit wait, never a hardcoded
- * {@code Thread.sleep()}. Emulators are slow and variable, and hardcoded
- * sleeps are one of the most common sources of mobile-suite flakiness -
- * they're either too short (flaky) or too long (slow suite) and usually end
- * up being both over time as the app changes.
- */
-public abstract class BasePage {
-
+public class BasePage {
     protected final AndroidDriver driver;
     protected final WebDriverWait wait;
 
-    protected BasePage(AndroidDriver driver) {
+    public BasePage(AndroidDriver driver) {
         this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
     protected WebElement waitVisible(By locator) {
@@ -34,8 +26,19 @@ public abstract class BasePage {
             new WebDriverWait(driver, timeout)
                     .until(ExpectedConditions.visibilityOfElementLocated(locator));
             return true;
-        } catch (org.openqa.selenium.TimeoutException e) {
+        } catch (Exception e) {
             return false;
+        }
+    }
+
+    public void dismissAndroidSystemDialogIfVisible() {
+        By dontShowAgain = By.id("android:id/button1");
+        By okButton = By.id("android:id/button2");
+
+        if (driver.findElements(dontShowAgain).size() > 0) {
+            driver.findElement(dontShowAgain).click();
+        } else if (driver.findElements(okButton).size() > 0) {
+            driver.findElement(okButton).click();
         }
     }
 }

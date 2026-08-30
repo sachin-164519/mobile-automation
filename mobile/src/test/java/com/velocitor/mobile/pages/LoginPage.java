@@ -4,37 +4,59 @@ import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 
-/**
- * Login screen.
- *
- * <p>Locators follow My Demo App's documented {@code test-}-prefixed
- * accessibility-id convention (confirmed against the app family's official
- * sample tests). Treat the exact strings as a starting point, not gospel:
- * verify them with Appium Inspector against the specific APK build in use
- * before relying on this in a real run, and update here if they've drifted.
- */
+import java.time.Duration;
+
 public class LoginPage extends BasePage {
 
-    private static final By USERNAME_FIELD = AppiumBy.accessibilityId("test-Username");
-    private static final By PASSWORD_FIELD = AppiumBy.accessibilityId("test-Password");
-    private static final By LOGIN_BUTTON = AppiumBy.accessibilityId("test-LOGIN");
-    private static final By ERROR_MESSAGE = AppiumBy.accessibilityId("test-Error message");
+    // Confirmed from the XML dump
+    private static final By LOGIN_SCREEN = AppiumBy.accessibilityId("login screen");
+    private static final By USERNAME_FIELD = AppiumBy.accessibilityId("Username input field");
+    private static final By PASSWORD_FIELD = AppiumBy.accessibilityId("Password input field");
+    private static final By LOGIN_BUTTON = AppiumBy.accessibilityId("Login button");
+
+    private static final By USERNAME_ERROR = AppiumBy.accessibilityId("Username-error-message");
+    private static final By PASSWORD_ERROR = AppiumBy.accessibilityId("Password-error-message");
+    private static final By GENERIC_ERROR = AppiumBy.accessibilityId("generic-error-message");
 
     public LoginPage(AndroidDriver driver) {
         super(driver);
     }
 
+    public boolean isLoginScreenDisplayed() {
+        return isVisible(LOGIN_SCREEN, Duration.ofSeconds(5));
+    }
+
     public void login(String username, String password) {
+        waitVisible(USERNAME_FIELD).clear();
         waitVisible(USERNAME_FIELD).sendKeys(username);
-        driver.findElement(PASSWORD_FIELD).sendKeys(password);
-        driver.findElement(LOGIN_BUTTON).click();
+
+        waitVisible(PASSWORD_FIELD).clear();
+        waitVisible(PASSWORD_FIELD).sendKeys(password);
+
+        waitVisible(LOGIN_BUTTON).click();
     }
 
-    public boolean isErrorMessageDisplayed() {
-        return isVisible(ERROR_MESSAGE, java.time.Duration.ofSeconds(5));
+    public boolean isUsernameErrorDisplayed() {
+        return isVisible(USERNAME_ERROR, Duration.ofSeconds(5));
     }
 
-    public String getErrorMessageText() {
-        return waitVisible(ERROR_MESSAGE).getText();
+    public boolean isPasswordErrorDisplayed() {
+        return isVisible(PASSWORD_ERROR, Duration.ofSeconds(5));
+    }
+
+    public boolean isGenericErrorDisplayed() {
+        return isVisible(GENERIC_ERROR, Duration.ofSeconds(5));
+    }
+
+    public String getUsernameErrorText() {
+        return waitVisible(USERNAME_ERROR).getText();
+    }
+
+    public String getPasswordErrorText() {
+        return waitVisible(PASSWORD_ERROR).getText();
+    }
+
+    public String getGenericErrorText() {
+        return waitVisible(GENERIC_ERROR).getText();
     }
 }

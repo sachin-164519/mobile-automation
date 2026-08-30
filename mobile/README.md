@@ -1,123 +1,286 @@
-# Mobile Suite Design — Sauce Labs "My Demo App" (Android)
+# Mobile Automation Suite
 
-## Target app
+This project contains the Android mobile automation suite for the Sauce Labs My Demo App. It is built with Java, Maven, Appium, and TestNG.
 
-Sauce Labs **My Demo App** (Android), built from the APK on the project's
-[releases page](https://github.com/saucelabs/my-demo-app-android/releases).
-It's the mobile counterpart to Sauce Demo (`saucedemo.com`): a login screen,
-a product catalog, a cart, and a checkout flow, using the same
-`standard_user` / `secret_sauce` style credentials and the same general
-screen flow.
+## Overview
 
-## Structure
+The purpose of this project is to automate end-to-end user flows for the My Demo App using Appium and the Page Object Model (POM) design pattern. The suite currently covers the main checkout journey, including login, product selection, cart, checkout, payment, review, and order completion.
 
-```
+## Target Application
+
+- App package: `com.saucelabs.mydemoapp.rn`
+- App activity: `com.saucelabs.mydemoapp.rn.MainActivity`
+- Mobile automation framework: Appium
+- Driver: AndroidDriver with UiAutomator2
+- Test runner: TestNG
+- Assertions: TestNG + AssertJ
+
+## Technology Stack
+
+- Java 17
+- Maven
+- Appium Java Client
+- Selenium / Appium WebDriver APIs
+- TestNG
+- AssertJ
+- Android Emulator / Real Device
+
+## Project Structure
+
+```text
 mobile/
 ├── pom.xml
-├── DESIGN.md
-└── src/test/java/com/velocitor/mobile/
-    ├── base/
-    │   ├── DriverFactory.java     # builds the AndroidDriver from configurable capabilities
-    │   └── BaseMobileTest.java    # per-test app launch/teardown (JUnit 5 lifecycle)
-    ├── pages/
-    │   ├── BasePage.java          # shared explicit-wait helpers
-    │   ├── LoginPage.java
-    │   ├── ProductCatalogPage.java
-    │   ├── CartPage.java
-    │   └── CheckoutPage.java
-    └── tests/
-        ├── LoginTests.java        # valid + invalid login
-        ├── CartTests.java         # add to cart, verify cart contents
-        └── CheckoutTests.java     # end-to-end purchase flow
+├── README.md
+├── .idea/
+│   ├── deviceManager.xml
+│   ├── misc.xml
+│   ├── modules.xml
+│   ├── vcs.xml
+│   ├── workspace.xml
+│   └── caches/
+│       └── deviceStreaming.xml
+├── src/
+│   ├── test/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── velocitor/
+│   │   │           └── mobile/
+│   │   │               ├── base/
+│   │   │               │   ├── BaseMobileTest.java
+│   │   │               │   └── DriverFactory.java
+│   │   │               ├── pages/
+│   │   │               │   ├── BasePage.java
+│   │   │               │   ├── CartPage.java
+│   │   │               │   ├── CheckoutPage.java
+│   │   │               │   ├── HomePage.java
+│   │   │               │   ├── LoginPage.java
+│   │   │               │   ├── OrderCompletionPage.java
+│   │   │               │   ├── PaymentPage.java
+│   │   │               │   ├── ProductCatalogPage.java
+│   │   │               │   ├── ProductDetailsPage.java
+│   │   │               │   └── ReviewOrderPage.java
+│   │   │               └── tests/
+│   │   │                   └── CheckoutJourneyTest.java
+│   │   └── resources/
+│   │       └── apps/
+│   │           └── MyDemoApp.apk
+└── target/
+    ├── generated-test-sources/
+    ├── maven-status/
+    ├── surefire-reports/
+    └── test-classes/
 ```
 
-## Key design choices
+## Key Components
 
-**Page Object Model, one class per screen.** Each page object owns its own
-locators and exposes intent-level methods (`login(user, pass)`,
-`addFirstProductToCart()`, `proceedToCheckout()`) rather than exposing raw
-`WebElement`s to tests. Test classes read like a script of user actions, not
-a list of low-level driver calls — the same reasoning behind keeping the API
-suite's request-building out of the test bodies.
+### 1. DriverFactory
+`DriverFactory.java` is responsible for creating the Appium AndroidDriver session.
 
-**Locator strategy: accessibility id first.** Android content-descriptions
-(exposed to Appium as accessibility ids) are the most stable selector this
-app family uses — they don't shift with layout/resource-id changes the way
-`R.id` values can across builds, and they're the same convention used in
-Sauce Labs' own sample test suites for this app family (confirmed against
-their `sample-app-mobile` reference tests: `test-Username`, `test-Password`,
-`test-LOGIN`, `test-Error message`, `test-PRODUCTS`, etc.). Where I couldn't
-independently verify an exact id (cart/checkout locators, in particular), I
-used my best-informed guess following that same `test-`-prefixed convention
-and flagged it in the page object's Javadoc rather than presenting it as
-verified. In a real onboarding, the very first thing I'd do is open Appium
-Inspector against the actual APK and correct/confirm every locator against
-the live element tree — that's a five-minute task with a running emulator
-and not something worth faking confidence about without one.
+Responsibilities:
+- set default Appium server URL
+- set device name and Android version
+- configure app path and app package/activity
+- enable permissions
+- set command timeout and automation name
+- create the AndroidDriver instance
 
-**Fresh app session per test.** `BaseMobileTest` launches a new driver
-session in `@BeforeEach` and quits it in `@AfterEach`, the same independence
-requirement the assignment calls out for the API suite. It costs time
-(app relaunch is not free), but a test that adds an item to a cart shouldn't
-leave state for the next test to trip over, and debugging a failure is much
-easier when you know the app started from a known, empty state.
+This class centralizes the app and device configuration so the tests remain environment independent.
 
-**Explicit waits everywhere, no `Thread.sleep`.** `BasePage` wraps
-`WebDriverWait` + `ExpectedConditions`. Emulators are slow and inconsistent;
-hardcoded sleeps are one of the most common sources of flaky mobile suites —
-tuned once against a fast machine, they start failing (or start silently
-wasting minutes) as soon as the environment changes.
+### 2. BaseMobileTest
+`BaseMobileTest.java` serves as the shared base class for all test classes.
 
-**Config mirrors the API suite's pattern.** `DriverFactory` reads the Appium
-server URL, device name, platform version, and app path from system
-properties with sane local-emulator defaults, the same "configurable, not
-hardcoded" principle the assignment requires for the API suite's base URI.
-Swapping these for a device-cloud provider's capabilities (see below) is a
-config change, not a test-code change.
+Responsibilities:
+- initialize the Appium driver before each test
+- dismiss Android compatibility popups if they appear
+- close the driver after each test
+- expose the shared mobile driver
 
-## Running locally
+This makes each test isolated and reduces duplicate setup code.
 
-Requires a running Appium 2 server and a booted Android emulator (or
-connected device) with the My Demo App APK downloaded locally.
+### 3. BasePage
+`BasePage.java` provides common UI interaction utilities.
+
+Responsibilities:
+- WebDriverWait setup
+- generic visibility checks
+- reusable `waitVisible(...)` methods
+- helper methods used by all page objects
+
+This reduces duplication across different screens and keeps page classes cleaner.
+
+### 4. Page Object Classes
+Each app screen has its own `Page Object` class.
+
+- `HomePage`
+  - home screen
+  - menu open actions
+  - login entry
+  - product catalog navigation
+
+- `LoginPage`
+  - username/password fields
+  - login button
+  - validation messages
+
+- `ProductCatalogPage`
+  - visible product list
+  - open selected product
+  - cart navigation
+
+- `ProductDetailsPage`
+  - product title/price
+  - quantity adjustments
+  - color selection
+  - add to cart
+
+- `CartPage`
+  - cart state
+  - item list
+  - total items/price
+  - proceed to checkout
+
+- `CheckoutPage`
+  - shipping address details
+  - navigation to payment
+
+- `PaymentPage`
+  - card details
+  - billing address checks
+  - review order flow
+
+- `ReviewOrderPage`
+  - review selected product and totals
+  - place order action
+
+- `OrderCompletionPage`
+  - final confirmation screen
+  - verify order completed successfully
+
+### 5. Test Classes
+`CheckoutJourneyTest.java` contains the main end-to-end workflow.
+
+This is the primary test flow:
+1. app opens
+2. open menu
+3. login
+4. select a product
+5. open product details
+6. add to cart
+7. open cart
+8. proceed to checkout
+9. fill shipping address
+10. go to payment
+11. fill payment details
+12. review order
+13. place order
+14. confirm order completion
+
+## Design
+
+This project follows a clean and maintainable mobile test automation design.
+
+### Page Object Model (POM)
+Every screen is represented by a dedicated page class. This keeps:
+- locators in one place
+- test methods readable
+- UI changes isolated to screen objects
+- the automation resilient to app UI changes
+
+### Shared Driver Model
+The Appium driver is created once per test in `BaseMobileTest` and used by all page objects. This keeps the flow consistent and reduces driver creation noise.
+
+### Wait Strategy
+The framework uses explicit waits through `WebDriverWait` to avoid flaky tests caused by timing issues. This is important for dynamic native Android app screens.
+
+### Screen Isolation
+Each page object encapsulates:
+- UI element locators
+- interaction methods
+- validation methods
+
+This way, tests focus on business behavior instead of low-level element operations.
+
+### Config-Driven Setup
+Driver setup is centralized in `DriverFactory`, so environment-specific configuration such as:
+- App path
+- device name
+- Android version
+- Appium host
+can be controlled externally or through Maven system properties.
+
+## Supported Flow
+
+The current automation covers this business flow:
+
+```text
+Home page
+ -> Menu
+ -> Login
+ -> Product catalog
+ -> Select product
+ -> Product details
+ -> Add to cart
+ -> Cart
+ -> Checkout
+ -> Payment
+ -> Review order
+ -> Place order
+ -> Order completion
+```
+
+## Prerequisites
+
+Before running the automation suite, make sure:
+
+- Java 17 is installed
+- Maven is installed
+- Android emulator or physical device is available
+- Appium server is running
+- APK is present in `src/test/resources/apps/`
+
+## Appium Setup
+
+Start Appium:
 
 ```bash
-appium                     # start the Appium server (default port 4723)
-cd mobile
-mvn test \
-  -Dapp.path=/absolute/path/to/Android-MyDemoApp.apk \
-  -Ddevice.name=Pixel_6_API_34 \
-  -Dplatform.version=14
+appium
 ```
 
-I did not have an emulator set up to execute this suite end-to-end for
-submission — per the assignment, this part is graded on design and a
-representative sample rather than a fully green run. The code is written to
-actually compile and run against a real session; it isn't pseudocode.
+Default Appium URL used by the project:
 
-## What I'd do with more time
+```text
+http://127.0.0.1:4723
+```
 
-- Verify every locator against the real element tree via Appium Inspector,
-  and switch `addFirstProductToCart()` to target a specific named product
-  (e.g., by locating the name text, then its sibling "ADD TO CART" button)
-  instead of "whichever is first."
-- Add negative/edge coverage mirroring the API suite's adversarial style:
-  removing an item from the cart, checkout with missing required fields,
-  back-navigation mid-checkout, app backgrounding/resume during checkout.
-- Add a screenshot-on-failure JUnit 5 extension — invaluable for mobile
-  specifically, since a CI failure log rarely tells you *what the screen
-  actually looked like* the way a screenshot does.
-- Consider `Appium 2`'s parallel session support once the suite grows past
-  a handful of tests, so mobile runs don't become the slow leg of CI.
+## Run the Test
 
-## Running mobile tests in CI: emulator vs. device cloud
+From the project root:
 
-Running an Android emulator directly on a GitHub-hosted runner is possible
-(`reactivecircus/android-emulator-runner` is the standard action for it) but
-it's slow to boot, resource-constrained, and only ever tests one OS/device
-combination. For anything beyond a smoke check, I'd point CI at a device
-cloud (Sauce Labs' own device cloud, or BrowserStack App Automate) instead:
-upload the APK, swap `DriverFactory`'s capabilities for the provider's
-remote WebDriver URL + device matrix, and get real-device coverage across
-OS versions without maintaining emulator infrastructure. See the root
-`README.md`'s CI section for how that's wired as a separate, mostly-stubbed
-job in `.github/workflows/ci.yml`.
+```bash
+cd c:\sks\mobile-automation\mobile
+mvn test -Dtest=CheckoutJourneyTest
+```
+
+Optional runtime overrides:
+
+```bash
+mvn test -Dtest=CheckoutJourneyTest
+    -Dapp.path="C:\sks\mobile-automation\mobile\src\test\resources\apps\MyDemoApp.apk"
+    -Ddevice.name="Pixel_9_Pro"
+    -Dplatform.version="17"
+```
+
+## Handling App Launch Popups
+
+Some Android environments show an app compatibility dialog when the app starts. The project handles this in `BaseMobileTest` by checking for common Android popup button IDs and closing the dialog automatically before continuing.
+
+## Current State
+
+The project currently includes:
+- core Appium driver configuration
+- page object model for each screen
+- end-to-end checkout automation
+- reusable UI utilities
+- mobile test structure ready for execution on Android
+
+This suite is structured to support continuous mobile UI automation and is aligned with the current app flow and page model used in the My Demo App.

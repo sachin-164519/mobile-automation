@@ -14,9 +14,9 @@ public class LoginPage extends BasePage {
     private static final By PASSWORD_FIELD = AppiumBy.accessibilityId("Password input field");
     private static final By LOGIN_BUTTON = AppiumBy.accessibilityId("Login button");
 
-    private static final By USERNAME_ERROR = AppiumBy.accessibilityId("Username-error-message");
-    private static final By PASSWORD_ERROR = AppiumBy.accessibilityId("Password-error-message");
-    private static final By GENERIC_ERROR = AppiumBy.accessibilityId("generic-error-message");
+    private static final By USERNAME_ERROR = AppiumBy.xpath("//android.widget.TextView[@text=\"Username is required\"]");
+    private static final By PASSWORD_ERROR = AppiumBy.xpath("//android.widget.TextView[@text=\"Password is required\"]");
+    private static final By GENERIC_ERROR = AppiumBy.xpath("//android.widget.TextView[@text=\"Provided credentials do not match any user in this service.\"]");
 
     public LoginPage(AndroidDriver driver) {
         super(driver);

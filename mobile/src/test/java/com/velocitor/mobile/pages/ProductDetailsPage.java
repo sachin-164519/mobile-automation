@@ -19,9 +19,11 @@ public class ProductDetailsPage extends BasePage {
     private static final By GRAY_CIRCLE = AppiumBy.accessibilityId("gray circle");
     private static final By RED_CIRCLE = AppiumBy.accessibilityId("red circle");
 
-    private static final By COUNTER_MINUS = AppiumBy.accessibilityId("counter minus button");
-    private static final By COUNTER_PLUS = AppiumBy.accessibilityId("counter plus button");
+    private static final By COUNTER_MINUS = AppiumBy.xpath("//android.view.ViewGroup[@content-desc=\"counter minus button\"]/android.widget.ImageView");
+    private static final By COUNTER_PLUS = AppiumBy.xpath("//android.view.ViewGroup[@content-desc=\"counter plus button\"]/android.widget.ImageView");
     private static final By COUNTER_AMOUNT = AppiumBy.accessibilityId("counter amount");
+    private static final By COUNTER_AMOUNT_TEXT =
+        By.xpath("//*[@content-desc='counter amount']//android.widget.TextView");
     private static final By ADD_TO_CART_BUTTON = AppiumBy.accessibilityId("Add To Cart button");
 
     public ProductDetailsPage(AndroidDriver driver) {
@@ -70,7 +72,9 @@ public class ProductDetailsPage extends BasePage {
     }
 
     public int getQuantity() {
-        return Integer.parseInt(waitVisible(COUNTER_AMOUNT).getText());
+        WebElement counter = waitVisible(COUNTER_AMOUNT);
+        String value = counter.findElement(COUNTER_AMOUNT_TEXT).getText().trim();
+        return Integer.parseInt(value);
     }
 
     public void incrementQuantity() {

@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class PaymentPage extends BasePage {
 
@@ -25,7 +26,7 @@ public class PaymentPage extends BasePage {
             AppiumBy.accessibilityId("checkbox for My billing address is the same as my shipping address.");
     private static final By REVIEW_ORDER_BUTTON = AppiumBy.accessibilityId("Review Order button");
 
-    public PaymentPage(AndroidDriver driver) {
+    public PaymentPage(AppiumDriver driver) {
         super(driver);
     }
 

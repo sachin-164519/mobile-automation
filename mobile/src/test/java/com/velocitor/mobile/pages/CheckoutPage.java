@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class CheckoutPage extends BasePage {
 
@@ -21,7 +22,7 @@ public class CheckoutPage extends BasePage {
 
     private static final By TO_PAYMENT_BUTTON = AppiumBy.accessibilityId("To Payment button");
 
-    public CheckoutPage(AndroidDriver driver) {
+    public CheckoutPage(AppiumDriver driver) {
         super(driver);
     }
 

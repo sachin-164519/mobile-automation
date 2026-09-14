@@ -1,32 +1,54 @@
 package com.velocitor.mobile.base;
 
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public class BaseMobileTest {
-    protected AndroidDriver driver;
+
+    protected AppiumDriver driver;
 
     @BeforeMethod
     public void setUp() throws Exception {
+
+        // Create Android or iOS driver based on -Dplatform
         driver = DriverFactory.createDriver();
-        dismissCompatibilityDialogIfVisible();
+
+        // Handle Android compatibility dialog only
+        if (isAndroid()) {
+            dismissCompatibilityDialogIfVisible();
+        }
     }
 
     @AfterMethod
     public void tearDown() {
+
         if (driver != null) {
             driver.quit();
+            driver = null;
         }
     }
 
-    protected AndroidDriver getDriver() {
+    protected AppiumDriver getDriver() {
         return driver;
     }
 
+    /**
+     * Check whether current execution is Android.
+     */
+    private boolean isAndroid() {
+        String platform = System.getProperty("platform", "android");
+        return platform.equalsIgnoreCase("android");
+    }
+
+    /**
+     * Android-specific compatibility dialog handling.
+     */
     private void dismissCompatibilityDialogIfVisible() {
+
         try {
+
             By dontShowAgain = By.id("android:id/button1");
             By okButton = By.id("android:id/button2");
 
@@ -38,8 +60,9 @@ public class BaseMobileTest {
             if (driver.findElements(okButton).size() > 0) {
                 driver.findElement(okButton).click();
             }
+
         } catch (Exception ignored) {
-            // dialog not present or already dismissed
+            // Dialog not present or already dismissed
         }
     }
 }

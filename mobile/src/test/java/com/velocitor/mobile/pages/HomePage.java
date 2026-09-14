@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class HomePage extends BasePage {
 
@@ -18,7 +19,7 @@ public class HomePage extends BasePage {
     private static final By MENU_ITEM_LOGIN = AppiumBy.accessibilityId("menu item log in");
     private static final By MENU_ITEM_LOGOUT = AppiumBy.accessibilityId("menu item log out");
 
-    public HomePage(AndroidDriver driver) {
+    public HomePage(AppiumDriver driver) {
         super(driver);
     }
 

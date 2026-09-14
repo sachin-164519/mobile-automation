@@ -1,12 +1,13 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
-import java.util.List;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class ReviewOrderPage extends BasePage {
 
@@ -32,7 +33,7 @@ public class ReviewOrderPage extends BasePage {
 
     private static final By PLACE_ORDER_BUTTON = AppiumBy.accessibilityId("Place Order button");
 
-    public ReviewOrderPage(AndroidDriver driver) {
+    public ReviewOrderPage(AppiumDriver driver) {
         super(driver);
     }
 

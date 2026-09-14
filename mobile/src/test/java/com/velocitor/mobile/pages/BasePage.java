@@ -1,20 +1,20 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumDriver;
 
 public class BasePage {
-    protected final AndroidDriver driver;
+    protected final AppiumDriver driver;
     protected final WebDriverWait wait;
 
-    public BasePage(AndroidDriver driver) {
-        this.driver = driver;
-        this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+    public BasePage(AppiumDriver driver2) {
+        this.driver = driver2;
+        this.wait = new WebDriverWait(driver2, Duration.ofSeconds(15));
     }
 
     protected WebElement waitVisible(By locator) {

@@ -1,13 +1,13 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+import java.util.List;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
-import java.util.List;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class CartPage extends BasePage {
 
@@ -19,7 +19,7 @@ public class CartPage extends BasePage {
     private static final By PROCEED_TO_CHECKOUT_BUTTON = AppiumBy.accessibilityId("Proceed To Checkout button");
     private static final By REMOVE_ITEM = AppiumBy.accessibilityId("remove item");
 
-    public CartPage(AndroidDriver driver) {
+    public CartPage(AppiumDriver driver) {
         super(driver);
     }
 

@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class ProductCatalogPage extends BasePage {
 
@@ -13,7 +14,7 @@ public class ProductCatalogPage extends BasePage {
     private static final By STORE_ITEM = AppiumBy.accessibilityId("store item");
     private static final By STORE_ITEM_TEXT = AppiumBy.accessibilityId("store item text");
 
-    public ProductCatalogPage(AndroidDriver driver) {
+    public ProductCatalogPage(AppiumDriver driver) {
         super(driver);
     }
 

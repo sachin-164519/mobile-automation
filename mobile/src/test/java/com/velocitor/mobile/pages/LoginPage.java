@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class LoginPage extends BasePage {
 
@@ -18,7 +19,7 @@ public class LoginPage extends BasePage {
     private static final By PASSWORD_ERROR = AppiumBy.xpath("//android.widget.TextView[@text=\"Password is required\"]");
     private static final By GENERIC_ERROR = AppiumBy.xpath("//android.widget.TextView[@text=\"Provided credentials do not match any user in this service.\"]");
 
-    public LoginPage(AndroidDriver driver) {
+    public LoginPage(AppiumDriver driver) {
         super(driver);
     }
 

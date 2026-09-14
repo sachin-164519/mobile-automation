@@ -1,10 +1,11 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class OrderCompletionPage extends BasePage {
 
@@ -22,7 +23,7 @@ public class OrderCompletionPage extends BasePage {
     private static final By CONTINUE_SHOPPING_BUTTON =
             AppiumBy.accessibilityId("Continue Shopping button");
 
-    public OrderCompletionPage(AndroidDriver driver) {
+    public OrderCompletionPage(AppiumDriver driver) {
         super(driver);
     }
 

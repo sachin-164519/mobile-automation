@@ -1,11 +1,12 @@
 package com.velocitor.mobile.pages;
 
-import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import java.time.Duration;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-import java.time.Duration;
+import io.appium.java_client.AppiumBy;
+import io.appium.java_client.AppiumDriver;
 
 public class ProductDetailsPage extends BasePage {
 
@@ -26,7 +27,7 @@ public class ProductDetailsPage extends BasePage {
         By.xpath("//*[@content-desc='counter amount']//android.widget.TextView");
     private static final By ADD_TO_CART_BUTTON = AppiumBy.accessibilityId("Add To Cart button");
 
-    public ProductDetailsPage(AndroidDriver driver) {
+    public ProductDetailsPage(AppiumDriver driver) {
         super(driver);
     }
 
